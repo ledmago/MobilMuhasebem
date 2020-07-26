@@ -1,0 +1,168 @@
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    
+    <!-- Path to Framework7 Library CSS-->
+    <script src="jquery.js" type="text/javascript"></script>
+	<style>body{
+	    background: #d0d0d0;
+		font-family:Tahoma;
+		color:#010101;
+		padding:0;
+		margin:0;		}
+	#baslik{font-size: 15px;padding-top: 10px;width: calc(50% - 1px);
+    float: left;
+    text-align: center;
+    border-bottom: 1px solid #696565;
+    padding-bottom: 10px;}
+	#container{width: 100%;
+    margin: auto;
+    margin-top: 14px;}
+	.sag{border-left: 1px solid #363232;}
+	
+	.para{
+	
+	width: calc(27% - 5px);
+    margin: auto;
+    display: block;
+    padding: 6px;
+    float: right;
+    height: 48px;
+    font-size: 16px;
+    margin-right: 5px;
+	border-radius: 3px;
+	border:1px solid #9c9898;
+	}
+	
+	.aciklama{
+	width: 70%;
+    border-radius: 3px;
+    margin-left: 5px;
+    font-size: 15px;
+    max-height: 48px;
+	}
+	button{width: 90%;
+    display: block;
+    margin: auto;
+    margin-top: 9px;
+    padding: 6px;
+    border: 0;
+    border-radius: 6px;
+    background: #1d821d;
+    color: #FFF;
+    height: 33px;
+}
+#toplamyaz{width: 100%;
+    text-align: center;
+    margin-top: 10px;
+    margin-bottom: 16px;font-weight:600;}
+	</style>
+  </head>
+  <body>
+ <div id="container">
+  <script>
+ function sil(id)
+ {
+ if (confirm('Silmek İstediğinizden Emin misiniz ?')) {
+    
+
+ var sarkilari_cek = JSON.parse(localStorage.getItem('toplamborc'));
+	delete sarkilari_cek.toplamborc.reverse()[id];
+	sarkilari_cek.toplamborc.reverse();
+
+	localStorage.setItem('toplamborc', JSON.stringify(sarkilari_cek));
+	listeyenile();
+		} else {
+   
+}
+ }
+ function listeyenile()
+ {
+$("#buraya_ekle").html("");
+ var toplam = 0;
+ 	var sarkilari_cek = JSON.parse(localStorage.getItem('toplamborc'));
+			
+			$.each(sarkilari_cek.toplamborc.reverse(), function(i, item) {
+				try{toplam = toplam + parseFloat(sarkilari_cek.toplamborc[i].para);
+					var aciklamas = "'" + sarkilari_cek.toplamborc[i].aciklama + "'";
+					$("#buraya_ekle").append('<div id="baslik" onclick="sil(' + i + ')">' + sarkilari_cek.toplamborc[i].tarih + '</div><div id="baslik" class="sag" onclick="alert(' + aciklamas + ')">' + sarkilari_cek.toplamborc[i].para + '</div>');
+					}catch(err){}
+					
+				  
+
+		   });
+		   $("#toplam").html(toplam);
+			return toplam;
+ 
+ }
+ 
+ $( document ).ready(function() {
+   
+
+ if (localStorage.getItem('toplamborc') === null) {
+ 
+var tarihS = new Date();
+var bugun = tarihS.toLocaleDateString();
+var suan_saat = tarihS.toLocaleTimeString();
+ var storage = '{"toplamborc":[' +'{"tarih":"' + bugun + " " + suan_saat + '","aciklama":"' + "İşlem Oluşturuldu" + '","para":"' + "0" + '"}]}';
+			var obj = JSON.parse(storage);
+			localStorage.setItem('toplamborc', JSON.stringify(obj));
+ 
+ }else{
+		
+		
+			listeyenile();
+			
+			
+			
+			}
+			
+			
+			
+			
+			
+			$("#ekleme_islemi").click(function() {
+	
+			var aciklama = $(".aciklama").val();
+			var fiyat = $(".para").val();
+			
+			var gelen_sarki = JSON.parse(localStorage.getItem('toplamborc'));
+			
+			var tarihS = new Date();
+var bugun = tarihS.toLocaleDateString();
+var suan_saat = tarihS.toLocaleTimeString();
+			
+			
+			gelen_sarki['toplamborc'].push({"tarih": bugun + " " + suan_saat,"aciklama": aciklama,"para": fiyat});
+			localStorage.setItem('toplamborc', JSON.stringify(gelen_sarki));
+	listeyenile();
+	});		
+
+			
+			
+			
+			
+		});	
+			
+			
+	
+
+ </script>
+<h3 style="text-align:center;"> TOPLAM BORÇ</h3>
+
+<h6 style="text-align:center;" onclick="window.location = 'muhasebem.html'"> TOPLAM KART SAYFASI</h6>
+ <input type="text" class="para" value="0.00">
+  <textarea class="aciklama" rows="3" placeholder="Açıklama"></textarea>
+  <button id="ekleme_islemi">EKLE</button>
+  <br>
+  <div id="toplamyaz">TOPLAM : <span id="toplam"></span>TL</div>
+ <div id="baslik" style="padding-top: 0px;">Tarih</div><div id="baslik" class="sag" style="padding-top: 0px;">Fiyat</div>
+ <div id="buraya_ekle"> </div>
+
+ 
+ </div>
+  </body>
+</html>
